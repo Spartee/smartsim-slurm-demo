@@ -1,0 +1,114 @@
+version: "2.2"
+
+services:
+  mysql:
+    image: mysql:5.7
+    hostname: mysql
+    container_name: mysql
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: slurm_acct_db
+      MYSQL_USER: slurm
+      MYSQL_PASSWORD: password
+    volumes:
+      - var_lib_mysql:/var/lib/mysql
+
+  slurmdbd:
+    image: smartsim-slurm-demo:v1.0.0
+    command: ["slurmdbd"]
+    container_name: slurmdbd
+    hostname: slurmdbd
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm-llnl
+      - var_log_slurm:/var/log/slurm-llnl
+    expose:
+      - "6819"
+    depends_on:
+      - mysql
+
+  slurmctld:
+    image: smartsim-slurm-demo:v1.0.0
+    command: ["slurmctld"]
+    container_name: slurmctld
+    hostname: slurmctld
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm-llnl
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm-llnl
+    expose:
+      - "6817"
+    ports:
+      - 8888:8888
+    depends_on:
+      - "slurmdbd"
+
+  c1:
+    image: smartsim-slurm-demo:v1.0.0
+    command: ["slurmd"]
+    hostname: c1
+    container_name: c1
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm-llnl
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm-llnl
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+
+  c2:
+    image: smartsim-slurm-demo:v1.0.0
+    command: ["slurmd"]
+    hostname: c2
+    container_name: c2
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm-llnl
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm-llnl
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+
+  c3:
+    image: smartsim-slurm-demo:v1.0.0
+    command: ["slurmd"]
+    hostname: c3
+    container_name: c3
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm-llnl
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm-llnl
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+
+  c4:
+    image: smartsim-slurm-demo:v1.0.0
+    command: ["slurmd"]
+    hostname: c4
+    container_name: c4
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm-llnl
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm-llnl
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+
+
+
+volumes:
+  etc_munge:
+  etc_slurm:
+  slurm_jobdir:
+  var_lib_mysql:
+  var_log_slurm:

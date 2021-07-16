@@ -23,7 +23,7 @@ Keep in mind, this demo is setup for computers containing at least 4 cores with 
 ## Start the Cluster
 
 ```console
-docker pull spartee/smartsim-slurm-demo:v1.0.0
+docker pull spartee/smartsim-slurm-demo:v1.0.1
 docker-compose up -d
 ./register_cluster.sh
 docker exec -it slurmctld bash
